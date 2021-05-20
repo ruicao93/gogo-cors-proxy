@@ -1,10 +1,12 @@
 package main
 
 import (
+	"bytes"
 	"crypto/tls"
 	"flag"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"strings"
@@ -66,7 +68,8 @@ func handleReverseRequest(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// create the request to server
-	req, err := http.NewRequest(r.Method, toCall, r.Body)
+	reqBody, _ := ioutil.ReadAll(r.Body)
+	req, err := http.NewRequest(r.Method, toCall, bytes.NewBuffer(reqBody))
 
 	// add ALL headers to the connection
 	for n, h := range r.Header {
